@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cherry Express - Sign Up</title>
+    <link href="https://fonts.googleapis.com/css2?family=Faster+One&display=swap" rel="stylesheet">
+    
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Browalia', Arial, sans-serif;
+            background-color: #9c0101;
+            color: white;
+        }
+
+        .top-bar {
+            background-color: #333;
+            padding: 10px 0;
+            text-align: right;
+        }
+
+        .top-bar .top-nav {
+            list-style: none;
+            display: inline-block;
+            font-family: 'Browalia', Arial, sans-serif;
+        }
+
+        .top-bar .top-nav li {
+            display: inline;
+            margin-left: 20px;
+        }
+
+        .top-bar .top-nav li a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .top-bar .top-nav li a:hover {
+            text-decoration: underline;
+        }
+
+        .logo-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .logo h1 {
+            font-family: 'Faster One', cursive;
+            font-size: 40px;
+            color: white;
+        }
+
+        .main-nav ul {
+            list-style: none;
+            font-family: 'Browalia', Arial, sans-serif;
+        }
+
+        .main-nav ul li {
+            display: inline-block;
+            margin-left: 30px;
+        }
+
+        .main-nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .main-nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .signup-container {
+            background-color: white;
+            color: black;
+            width: 350px;
+            margin: 100px auto;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-family: 'Browalia', Arial, sans-serif;
+        }
+
+        .signup-container h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .signup-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .signup-container input[type="text"],
+        .signup-container input[type="email"],
+        .signup-container input[type="date"],
+        .signup-container input[type="password"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .signup-container input[type="submit"] {
+            background-color: #9c0101;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .signup-container input[type="submit"]:hover {
+            background-color: #b30404;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="top-bar">
+            <ul class="top-nav">
+                <li><a href="login.html">Login</a></li>
+                <li><a href="signup.html">Sign Up</a></li>
+            </ul>
+        </div>
+        <div class="logo-nav">
+            <div class="logo">
+                <h1>Cherry Express</h1>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="tracking_customer.php">Track & Trace</a></li>
+                    <li><a href="pre-calculation.php">Pre-Calculation</a></li>
+                    <li><a href="preparation.php">Preparation to Ship</a></li>
+                    <li><a href="branches.html">Nearby Branches</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="signup-container">
+        <h2>Create Your Account</h2>
+        <form action="signup_process.php" method="POST" onsubmit="return validateForm()">
+            <input type="text" name="name" placeholder="First Name" required>
+            <input type="text" name="surname" placeholder="Surname" required>
+            <input type="date" name="dob" placeholder="Date of Birth" required>
+            <input type="text" name="id_passport" placeholder="Thai ID or Passport" required>
+            <input type="text" name="phone" placeholder="Phone Number" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="submit" value="Submit">
+            <p class="error-message" id="error-message"></p>
+        </form>
+    </div>
+
+    <script>
+        function validateForm() {
+            let name = document.querySelector('input[name="name"]').value;
+            let surname = document.querySelector('input[name="surname"]').value;
+            let dob = document.querySelector('input[name="dob"]').value;
+            let idPassport = document.querySelector('input[name="id_passport"]').value;
+            let phone = document.querySelector('input[name="phone"]').value;
+            let email = document.querySelector('input[name="email"]').value;
+            let errorMessage = document.getElementById('error-message');
+
+            // Basic validation
+            if (!name || !surname || !dob || !idPassport || !phone || !email) {
+                errorMessage.textContent = "All fields must be filled in.";
+                return false;
+            }
+
+            // Validate Thai ID (13 digits)
+            let thaiIdPattern = /^\d{13}$/;
+            if (!thaiIdPattern.test(idPassport) && !/^[A-Za-z]\d{6}$/.test(idPassport)) {
+                errorMessage.textContent = "Thai ID must be 13 digits or Passport must be one letter followed by 6 digits.";
+                return false;
+            }
+
+            // Validate Phone (10 digits)
+            let phonePattern = /^\d{10}$/;
+            if (!phonePattern.test(phone)) {
+                errorMessage.textContent = "Phone number must be 10 digits.";
+                return false;
+            }
+
+            // Validate Email
+            let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                errorMessage.textContent = "Email must be in the format xxxx@xxxx.com.";
+                return false;
+            }
+
+            errorMessage.textContent = ""; // Clear error message
+            return true;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background-color: #f4f4f4; color: #333; }
+        .navbar { background-color: #333; color: white; padding: 1rem; text-align: center; }
+        .container { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; justify-content: center; }
+        .card { background-color: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); padding: 20px; width: 300px; text-align: center; }
+        footer { background-color: #333; color: white; text-align: center; padding: 1rem; margin-top: 20px; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Interactive Dashboard</h1>
+    </div>
+    <div class="container">
+        <!-- Date Selector -->
+        <div class="card">
+            <h2>Select Date</h2>
+            <input type="date" id="selectedDate" value="2024-01-01">
+            <button onclick="fetchData()">Load Data</button>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="card">
+            <h2>Daily Data</h2>
+            <canvas id="dailyChart"></canvas>
+        </div>
+        <div class="card">
+            <h2>Monthly Data</h2>
+            <canvas id="monthlyChart"></canvas>
+        </div>
+        <div class="card">
+            <h2>Yearly Data</h2>
+            <canvas id="yearlyChart"></canvas>
+        </div>
+    </div>
+    <footer>
+        <p>© 2024 Interactive Dashboard. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        const charts = {};
+
+        function fetchData() {
+            const selectedDate = document.getElementById('selectedDate').value;
+
+            ['daily', 'monthly', 'yearly'].forEach(type => {
+                fetch(`backend.php?type=${type}&date=${selectedDate}`)
+                    .then(response => response.json())
+                    .then(data => updateChart(type, data))
+                    .catch(error => console.error('Error fetching data:', error));
+            });
+        }
+
+        function updateChart(type, data) {
+            const ctx = document.getElementById(`${type}Chart`).getContext('2d');
+            if (charts[type]) {
+                charts[type].data.labels = data.labels;
+                charts[type].data.datasets[0].data = data.data;
+                charts[type].update();
+            } else {
+                charts[type] = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: `${type.charAt(0).toUpperCase() + type.slice(1)} Data`,
+                            data: data.data,
+                            borderColor: '#333',
+                            backgroundColor: 'rgba(51, 51, 51, 0.2)',
+                            fill: true,
+                        }],
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: true } },
+                    },
+                });
+            }
+        }
+    </script>
+</body>
+</html>

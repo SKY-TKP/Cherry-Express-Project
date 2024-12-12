@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cherry Express Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        .navbar { background-color: #8B0000; color: white; padding: 1rem; text-align: center; }
+        .container { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; justify-content: center; }
+        .card { background-color: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); padding: 20px; width: 300px; text-align: center; }
+        table { width: 100%; margin-top: 10px; border-collapse: collapse; }
+        th, td { padding: 8px; border: 1px solid #ccc; text-align: center; }
+        th { background-color: #8B0000; color: white; }
+        .footer { background-color: #8B0000; color: white; text-align: center; padding: 1rem; margin-top: 20px; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Cherry Express Dashboard</h1>
+    </div>
+    <div class="container">
+        <!-- Date Selector -->
+        <div class="card">
+            <h2>Select a Date</h2>
+            <input type="date" id="selectedDate" value="2024-01-01">
+            <button onclick="fetchAllData()">Fetch Data</button>
+        </div>
+
+        <!-- Sections for Daily, Monthly, and Yearly Data -->
+        <div class="card">
+            <h2>Daily Data</h2>
+            <canvas id="dailyChart"></canvas>
+            <table id="dailyTable">
+                <thead><tr><th>Time</th><th>Value</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>Monthly Data</h2>
+            <canvas id="monthlyChart"></canvas>
+            <table id="monthlyTable">
+                <thead><tr><th>Date</th><th>Value</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>Yearly Data</h2>
+            <canvas id="yearlyChart"></canvas>
+            <table id="yearlyTable">
+                <thead><tr><th>Month</th><th>Value</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="footer">
+        <p>© 2024 Cherry Express. All Rights Reserved.</p>
+    </div>
+    <script>
+        const charts = {};
+
+        function fetchAllData() {
+            const selectedDate = document.getElementById('selectedDate').value;
+            ['daily', 'monthly', 'yearly'].forEach(type => {
+                fetchData(type, selectedDate).then(data => {
+                    updateChart(type, data);
+                    updateTable(type, data);
+                });
+            });
+        }
+
+        function fetchData(type, date) {
+            return fetch(`data.php?type=${type}&date=${date}`).then(response => response.json());
+        }
+
+        function updateChart(type, data) {
+            const ctx = document.getElementById(`${type}Chart`).getContext('2d');
+            if (charts[type]) {
+                charts[type].data.labels = data.labels;
+                charts[type].data.datasets[0].data = data.data;
+                charts[type].update();
+            } else {
+                charts[type] = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: `${type.charAt(0).toUpperCase() + type.slice(1)} Data`,
+                            data: data.data,
+                            borderColor: '#8B0000',
+                            backgroundColor: 'rgba(139, 0, 0, 0.2)',
+                            fill: true
+                        }]
+                    },
+                    options: { responsive: true, plugins: { legend: { display: true } } }
+                });
+            }
+        }
+
+        function updateTable(type, data) {
+            const tableBody = document.querySelector(`#${type}Table tbody`);
+            tableBody.innerHTML = '';
+            data.labels.forEach((label, index) => {
+                const row = `<tr><td>${label}</td><td>${data.data[index]}</td></tr>`;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+    </script>
+</body>
+</html>

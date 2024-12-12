@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#header").load("./include/header.html");
+            $("#footer").load("./include/footer.html");
+        });
+    </script>
+    <title>Assign Order</title>
+    <style>
+        section {
+            display: flex;
+            flex-direction: column;
+            row-gap: 16px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            row-gap: 20px;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            row-gap: 16px;
+        }
+        div#parcels {
+            display: flex;
+            flex-direction: column;
+            row-gap: 16px;
+        }
+        #assign_button {
+            width: 500px;
+        }
+        button#print {
+            width: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+    <div class="container">
+        <h1>Assign an Order</h1>
+        <form>
+            <div class="input_box">
+                <input type="text" name="TrackNumber" id="TrackNumber" placeholder="" required>
+                <label>Order ID</label>
+            </div>
+            <button class="primary" type="submit" id="Search">Add existing order</button>
+        </form>
+        <button class="secondary" onclick="document.location.href='send.html'">Create new order</button>        
+        <p class="warning"></p>
+    </div>
+    <div id="parcels"></div>
+    <button class="primary" id="print" onclick="document.location.href='pay_option.html'">Pay</button>
+    <div id="footer"></div>
+</body>
+</html>
+<script>
+    $(document).ready(function() {
+        $('p.warning').hide();
+        $('#print').hide();
+        $("form").submit(function(event) {
+
+            event.preventDefault();
+            $.ajax({
+            url: './include/track_handler.php',
+            type: 'GET',
+            dataType: 'json',
+            data: $(this).serialize(),
+            success: function(response) {
+                sessionStorage.setItem("Parcels", JSON.stringify(response));
+                sessionStorage.setItem("OrderID", $('#TrackNumber').val());                
+                if (response.length === 0) {
+                    order = response;
+                    $('p.warning').show();
+                    $('p.warning').text('No such order or parcel.');
+                    $('#print').hide();
+                } else {
+                    $('p.warning').hide();
+                    $('#print').show();
+                    $('div#parcels').html('');
+                    response.forEach(parcel => {
+                        $('div#parcels').append(`
+<div class="container">
+    <h1>${parcel['ParcelID']}</h1>
+    <form id="${parcel['ParcelID']}">
+        <section>
+            <h2>Parcel</h2>
+            <div class="input_box">
+                <select name="BoxType" id="BoxType" required">
+                    <option value="" disabled selected>Select an option</option>
+                </select>
+                <label>Box Type</label>
+            </div>
+            <div class="input_box">
+                <input type="number" step="any" name="Weight" id="Weight" placeholder="" required>
+                <label>Weight(kg)</label>
+            </div>
+            <div class="input_box">
+                <select name="DeliveryType" id="DeliveryType" required>
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="Standard">Standard</option>
+                    <option value="Registered">Registered</option>
+                    <option value="Express">Express</option>
+                </select>
+                <label>Delivery Type</label>
+            </div>
+        </section>
+        <section>
+            <h2>Receiver</h2>
+            <div class="hflex">
+                <div class="input_box">
+                    <input type="text" name="ReceiverFirstName" id="ReceiverFirstName" placeholder="" required>
+                    <label>First Name</label>
+                </div>
+                <div class="input_box">
+                    <input type="text" name="ReceiverLastName" id="ReceiverLastName" placeholder="" required>
+                    <label>Last Name</label>
+                </div>    
+            </div>
+            <div class="input_box">
+                <input type="text" name="ReceiverAddressLine1" id="ReceiverAddressLine1" placeholder="">
+                <label>Address Line 1</label>
+            </div>
+            <div class="input_box">
+                <input type="text" name="ReceiverAddressLine2" id="ReceiverAddressLine2" placeholder="">
+                <label>Address Line 2</label>
+            </div>
+            <div class="input_box">
+                <input type="number" name="ReceiverPostCode" id="ReceiverPostCode" placeholder="" required>
+                <label>Postal Code</label>
+            </div>
+            <div class="input_box">
+                <input type="number" name="ReceiverContactNumber" id="ReceiverContactNumber" placeholder="" required>
+                <label>Phone Number</label>
+            </div>
+        </section>
+        <section>
+            <button class="primary" type="button" onclick="assign_order('${parcel['ParcelID']}')">Assign</button>
+        </section>
+    </form>
+</div>
+
+                        `);
+
+                        $.ajax({url: './include/get_box.php', type: 'GET', dataType: 'json',
+                            success: function(boxes) {
+                                boxes.forEach(box => {
+                                    $(`form#${parcel['ParcelID']} #BoxType`).append(`
+                                        <option value="${box['BoxType']}">${box['BoxSize']}</option>
+                                    `)
+                                });
+
+                                fields = ['BoxType','Weight', 'DeliveryType', 'ReceiverFirstName', 'ReceiverLastName', 'ReceiverAddressLine1', 'ReceiverAddressLine2', 'ReceiverPostCode', 'ReceiverContactNumber']
+                                fields.forEach(field => {
+                                    $(`form#${parcel['ParcelID']} #${field}`).val(parcel[field]);
+                                });
+
+                            }});
+
+                        
+                        console.log(response);
+                        if (parcel['Status']!='Submitted') {
+                            $(`form#${parcel['ParcelID']} button`).attr("class", "secondary");
+                            $(`form#${parcel['ParcelID']} button`).text("✓Assigned");
+                            $(`form#${parcel['ParcelID']} button`).prop('disabled', true);
+                        }
+                    })
+                }
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+            });
+        });
+    });
+
+    function assign_order(id) {
+        $(`form#${id} button`).attr("class", "secondary");
+        $(`form#${id} button`).text("✓Assigned");
+        $(`form#${id} button`).prop('disabled', true);
+        $.ajax({
+            url: './include/assign_order_handler.php',
+            type: 'GET',
+            dataType: 'json',
+            data: $(`form#${id}`).serialize() + `&ParcelID=${id}`,
+            success: function(response) {
+            }
+        });
+    }
+</script>

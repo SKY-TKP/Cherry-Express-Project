@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#header").load("./include/header.html");
+            $("#footer").load("./include/footer.html");
+        });
+    </script>
+    <title>Sign Up</title>
+    <style>
+        section {
+            display: flex;
+            flex-direction: column;
+            row-gap: 16px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            row-gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+    <div class="container">
+        <h1>
+            <img src="./image/icon/Logo_Black.svg" class="logo" alt="Logo" height="30px">
+            Sign Up
+        </h1>
+        <form action="./include/signup_handler.php" method="post">
+            
+            <section>
+                <h2>Login Info</h2>
+                <div class="input_box">
+                    <input type="text" name="Email" id="Email" placeholder="" required>
+                    <label>Email</label>
+                </div>
+                <div class="input_box">
+                    <input type="password" name="Password" id="Password" placeholder="" required>
+                    <label>Password</label>
+                </div>
+                <div class="input_box">
+                    <input type="password" name="ConfirmPassword" id="ConfirmPassword" placeholder="" required>
+                    <label>Confirm Password</label>
+                </div>
+            </section>
+           
+            <section>
+                <h2>Personal Info</h2>
+                <div class="hflex">
+                    <div class="input_box">
+                        <input type="text" name="FirstName" id="FirstName" placeholder="" required>
+                        <label>First Name</label>
+                    </div>
+                    <div class="input_box">
+                        <input type="text" name="LastName" id="LastName" placeholder="" required>
+                        <label>Last Name</label>
+                    </div>    
+                </div>
+                <div class="input_box">
+                    <input type="number" name="ContactNumber" id="ContactNumber" placeholder="" required>
+                    <label>Phone Number</label>
+                </div>
+            </section>
+           
+            <section>
+                <h2>Adress Info</h2>
+                <div class="input_box">
+                    <input type="text" name="AddressLine1" id="AddressLine1" placeholder="" required>
+                    <label>Address Line 1</label>
+                </div>
+                <div class="input_box">
+                    <input type="text" name="AddressLine2" id="AddressLine2" placeholder="">
+                    <label>Address Line 2</label>
+                </div>
+                <div class="input_box">
+                    <input type="number" name="PostCode" id="PostCode" placeholder="" required>
+                    <label>Postal Code</label>
+                </div>
+            </section>
+        
+        <button class="primary" type="submit">Sign up</button>
+        </form>
+        <p class="warning"></p>
+        <button class="primary" id="login" onclick="document.location='./login.html'">Log in</button>
+    </div>
+    <div id="footer"></div>
+</body>
+</html>
+<script>
+    $(document).ready(function() {
+        $("button#login").hide();
+        $("p#warning").hide();
+        $("form").submit(function(event) {
+            event.preventDefault();
+            $.ajax({
+            url: './include/signup_handler.php',
+            type: 'POST',
+            dataType: 'json',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response['success']) {
+                    $('p.warning').hide();
+                    $('form').hide();
+                    $('h1').text('Account is created.');
+                    $('button#login').show();
+                } else {
+                    $('p.warning').text(response['message']);
+                }
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+            });
+        });
+        });
+</script>

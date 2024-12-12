@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="../styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#header").load("./include/header.html");
+            $("#footer").load("./include/footer.html");
+        });
+    </script>
+    <style>
+        form {
+            display: flex;
+            flex-direction: column;
+            row-gap: 16px;
+        }        
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+    <div class="container">
+        <h1>
+            <img src="./image/icon/Logo_Black.svg" class="logo" alt="Logo" height="30px">
+            Employee
+        </h1>
+        <form action="./include/login_handler.php" method="post">
+            <div class="input_box">
+                <input type="text" name="EmployeeID" id="EmployeeID" placeholder="" required>
+                <label>EmployeeID</label>
+            </div>
+            <div class="input_box">
+                <input type="password" name="Password" id="Password" placeholder=" " required>
+                <label>Password</label>
+            </div>
+            <label class="check_box">
+                <input type="checkbox" name="remember">Remember Me
+            </label>
+        <button class="primary" type="submit">Log in</button>
+        </form>
+        <!-- <button class="secondary" onclick="document.location='./signup.html'">Sign Up</button> -->
+        <!-- <a href="./forget.html" class="text_link">Forget Password?</a> -->
+        <p class="warning"></p>
+    </div>
+    <div id="footer"></div>
+    <script>
+        $(document).ready(function() {
+            $('p.warning').hide();
+            $("form").submit(function(event) {
+                event.preventDefault();
+                $.ajax({
+                url: './include/login_handler.php',
+                type: 'POST',
+                dataType: 'json',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response['success']) {
+                        document.location.href = 'home.html';
+                    } else {
+                        $('p.warning').show();
+                        $('p.warning').text(response['message']);
+                    }
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

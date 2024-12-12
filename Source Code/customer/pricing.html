@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../styles.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#header").load("./include/header.html");
+        $("#footer").load("./include/footer.html");
+      });
+    </script>
+    <title>Pricing</title>
+    <style>
+      form {
+        display: flex;
+        flex-direction: column;
+        row-gap: 20px;
+      }
+      section {
+        display: flex;
+        flex-direction: column;
+        row-gap: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header"></div>
+    <div class="container">
+      <form action="./include/add_cart_handler.php" method="post">
+        <h1>Price Calculation</h1>
+        <section>
+          <div class="hflex">
+            <div class="input_box">
+              <input
+                type="number"
+                step="any"
+                name="Length"
+                id="Length"
+                placeholder=""
+                required
+              />
+              <label>Length(cm)</label>
+            </div>
+            <div class="input_box">
+              <input
+                type="number"
+                step="any"
+                name="Width"
+                id="Width"
+                placeholder=""
+                required
+              />
+              <label>Width(cm)</label>
+            </div>
+            <div class="input_box">
+              <input
+                type="number"
+                step="any"
+                name="Height"
+                id="Height"
+                placeholder=""
+                required
+              />
+              <label>Height(cm)</label>
+            </div>
+          </div>
+          <div class="input_box">
+            <input
+              type="number"
+              step="any"
+              name="Weight"
+              id="Weight"
+              placeholder=""
+              required
+            />
+            <label>Weight(kg)</label>
+          </div>
+          <div class="input_box">
+            <select name="DeliveryType" id="DeliveryType" required>
+              <option value="" disabled selected>Select an option</option>
+              <option value="Standard">Standard</option>
+              <option value="Registered">Registered</option>
+              <option value="Express">Express</option>
+            </select>
+            <label>Delivery Type</label>
+          </div>
+        </section>
+        <button class="primary" type="submit">Calculate</button>
+      </form>
+      <div id="result"></div>
+    </div>
+    <div id="footer"></div>
+  </body>
+</html>
+<script>
+  $(document).ready(function () {
+    $("form").submit(function (event) {
+      event.preventDefault();
+      console.log($(this).serialize());
+      $.ajax({
+        url: "./include/pricing_handler.php",
+        type: "POST",
+        dataType: "json",
+        data: $(this).serialize(),
+        success: function (response) {
+          $("div#result").html(`
+                    <p>Box Size: ${response["BoxSize"]}</p>
+                    <p>Total Price: ${response["TotalPrice"]}</p>
+                `);
+        },
+        error: function (error) {
+          console.error("Error:", error);
+        },
+      });
+    });
+  });
+</script>

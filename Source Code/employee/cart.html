@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../styles.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#header").load("./include/header.html");
+        $("#footer").load("./include/footer.html");
+      });
+    </script>
+    <title>Cart</title>
+    <style>
+      .price {
+        font-size: 20px;
+        text-align: right;
+      }
+      div#parcels,
+      form {
+        display: flex;
+        flex-direction: column;
+        row-gap: 20px;
+      }
+      section {
+        border-bottom: 1px solid lightgrey;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header"></div>
+    <div class="container">
+      <h1>Cart</h1>
+      <div id="parcels"></div>
+      <form action="./include/submit_cart_handler.php" method="get">
+        <div class="input_box">
+          <input type="text" name="Email" id="Email" placeholder="" required />
+          <label>Sender Email</label>
+        </div>
+        <button
+          type="button"
+          class="secondary"
+          onclick="document.location='./include/clear_cart_handler.php'"
+        >
+          Clear
+        </button>
+        <button
+          type="button"
+          class="secondary"
+          onclick="document.location='./send.html'"
+        >
+          Add another
+        </button>
+        <button type="submit" class="primary">Submit</button>
+      </form>
+    </div>
+    <script>
+      $(document).ready(function () {
+        $.ajax({
+          url: "./include/session.php",
+          type: "POST",
+          dataType: "json",
+          success: function (session) {
+            console.error(session);
+            session["cart"].forEach((parcel) => {
+              $("div#parcels").append(`
+                            <section>
+                                <h2>${parcel["ReceiverFirstName"]}</h2>
+                                <p>${parcel["ReceiverAddressLine1"]}</p>
+                                <p class="price">฿${parcel["Price"]}</p>
+                            </section>
+                        `);
+            });
+          },
+          error: function (error) {
+            console.error("Error:", error);
+          },
+        });
+      });
+    </script>
+    <div id="footer"></div>
+  </body>
+</html>

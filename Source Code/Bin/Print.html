@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="Styles.css">
+    <title>Print</title>
+</head>
+
+<body>
+    <div class="container">
+        <div style="display: inline-block; width: 200px; text-align: left;">  
+            <p>Tracking ID: 1234567</p>
+            <p>Payment: Cash-on</p>
+            <p>Time: 12/12/12 12:12</p>
+        </div>
+        <img width="85px" src="https://cdn-icons-png.flaticon.com/512/241/241528.png">
+        <table style="width: 300px; margin: auto;">
+            <tr>
+                <th style="border-bottom: 2px solid;">Sender</th>
+                <th style="border-bottom: 2px solid;">Receiver</th>
+            </tr>
+            <tr>
+                <td>11/11 Road <br> 10500</td>
+                <td>22/22 Road <br> 10500</td>
+            </tr>
+        </table>
+        <button style="width: 300px;" onclick="window.print()">Print</button>
+    </div>
+</body>
+<html>

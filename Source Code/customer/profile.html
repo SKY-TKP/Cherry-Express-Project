@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#header").load("./include/header.html");
+            $("#footer").load("./include/footer.html");
+        });
+    </script>
+    <title>Profile</title>
+    <style>
+        section {
+            display: flex;
+            flex-direction: column;
+            row-gap: 16px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            row-gap: 20px;
+        }
+        div.input_line {
+            display: flex;
+            column-gap: 8px;
+        }
+        button#login {
+            display: none;
+        }
+        input:disabled {
+            background-color: white;
+            border: none !important;
+        }
+        #buttons {
+            display: flex;
+            column-gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+    <div class="container">
+        <h1>
+            <img src="./image/icon/Logo_Black.svg" class="logo" alt="Logo" height="30px">
+            Profile
+        </h1>
+        <form action="./include/edit_profile_handler.php" method="post">
+            
+            <section>
+                <h2>Login Info</h2>
+                <div class="input_box">
+                    <input type="text" name="Email" id="Email" placeholder="" required>
+                    <label>Email</label>
+                </div>
+                <!-- <div class="input_box" id="Password">
+                    <input type="password" name="Password" id="Password" placeholder="" required>
+                    <label>Password</label>
+                </div>
+                <div class="input_box" id="ConfirmPassword">
+                    <input type="password" name="ConfirmPassword" id="ConfirmPassword" placeholder="" required>
+                    <label>Confirm Password</label>
+                </div> -->
+            </section>
+           
+            <section>
+                <h2>Personal Info</h2>
+                <div class="input_line">
+                    <div class="input_box">
+                        <input type="text" name="FirstName" id="FirstName" placeholder="" required>
+                        <label>First Name</label>
+                    </div>
+                    <div class="input_box">
+                        <input type="text" name="LastName" id="LastName" placeholder="" required>
+                        <label>Last Name</label>
+                    </div>    
+                </div>
+                <div class="input_box">
+                    <input type="number" name="ContactNumber" id="ContactNumber" placeholder="" required>
+                    <label>Phone Number</label>
+                </div>
+            </section>
+           
+            <section>
+                <h2>Adress Info</h2>
+                <div class="input_box">
+                    <input type="text" name="AddressLine1" id="AddressLine1" placeholder="" required>
+                    <label>Address Line 1</label>
+                </div>
+                <div class="input_box">
+                    <input type="text" name="AddressLine2" id="AddressLine2" placeholder="">
+                    <label>Address Line 2</label>
+                </div>
+                <div class="input_box">
+                    <input type="number" name="PostCode" id="PostCode" placeholder="" required>
+                    <label>Postal Code</label>
+                </div>
+            </section>   
+            <div id="buttons">
+                <button class="secondary" type="button" id="discard">Discard</button>
+                <button class="primary" type="submit" id="save">Save</button>
+            </div>
+        </form>
+        <button class="primary" id="edit">Edit</button>
+        <p class="warning"></p>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: './include/session.php',
+                type: 'POST',
+                dataType: 'json',
+                success: function(session) {
+                    for (id in session['customer']) {
+                        $('#'+id).val(session['customer'][id]);
+                    }
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
+            });
+        })
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('div#ConfirmPassword').hide();
+            $('div#Password').hide();
+            $('#buttons').hide();
+            $('input').prop('disabled',true);
+            $('#edit').click(function(){
+                $('#edit').hide();
+                $('#buttons').show();
+                $('input').prop('disabled',false);
+                $('div#Password').show();
+                $('div#ConfirmPassword').show();
+            });
+            $('#discard').click(function(){
+                location.reload();
+            });
+        })
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('p.warning').hide();
+            $("form").submit(function(event) {
+                event.preventDefault();
+                $.ajax({
+                url: './include/edit_profile_handler.php',
+                type: 'POST',
+                dataType: 'json',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response['success']) {
+                        location.reload();
+                    } else {
+                        $('p.warning').show();
+                        $('p.warning').text(response['message']);
+                    }
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
+                });
+            });
+        });
+    </script>
+    <div id="footer"></div>
+</body>
+</html>

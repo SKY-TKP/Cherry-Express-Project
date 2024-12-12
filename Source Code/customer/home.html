@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#header").load("./include/header.html");
+            $("#footer").load("./include/footer.html");
+        });
+    </script>
+    <title>Cherry Express</title>
+    <style>
+        body {
+            position: relative;
+            display: block;
+            padding: 50px 0;
+        }
+        section {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            row-gap: 16px;
+        }
+        img.thumbnail {
+            z-index: -1;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.5);
+            transition: 0.3s;
+        }
+        section:hover img.thumbnail {
+            filter: brightness(0.4);
+        }
+        button.primary, button.secondary {
+            width: 100px;
+        }
+        h1 {
+            color: white;
+            font-size: 36px;
+            text-shadow: 0 0 3px var(--red);
+        }
+        div.button_container {
+            display: flex;
+            column-gap: 8px;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+    <main>
+        <section>
+            <img class="thumbnail" src="./image/thumbnail/1.png">
+            <h1>Fastest Delivery Service</h1>
+            <div class="button_container">
+                <button class="primary" onclick="document.location='./track.html'">Track</button>
+                <button class="secondary" onclick="document.location='./send.html'">Send</button>
+            </div>
+        </section>
+        <section>
+            <img class="thumbnail" src="./image/thumbnail/2.png">
+            <h1>Most Efficient Logistics</h1>
+            <div class="button_container">
+                <button class="primary" onclick="document.location='./pricing.html'">Pricing</button>
+                <button class="secondary" onclick="document.location='./store.html'">Store</button>
+            </div>
+        </section>
+    </main>
+    <div id="footer"></div>
+</body>
+</html>

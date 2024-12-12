@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#header").load("./include/header.html");
+            $("#footer").load("./include/footer.html");
+        });
+    </script>
+    <title>Order History</title>
+    <style>
+        section {
+            display: flex;
+            flex-direction: column;
+            row-gap: 16px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            row-gap: 20px;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            row-gap: 16px;
+        }
+        div#parcels {
+            display: flex;
+            flex-direction: column;
+            row-gap: 16px;
+        }
+        h2 {
+            border: none;
+            border-top: 1px solid lightgrey;
+        }
+        .container a {
+            color: black;
+        }
+        #Status {
+            color: #9c0101;
+        }
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+    <div class="container">
+        <h1 class="">Order History</h1>
+    </div>
+    <div id="footer"></div>
+</body>
+</html>
+<script>
+    $(document).ready(function() {
+        $.ajax({
+        url: './include/order_view_handler.php',
+        dataType: 'json',
+        success: function(response) {
+            if (response.length === 0) {
+                $('div.container').html(`
+                    <h1>No order yet</h1>
+                `)
+            } else {
+                for (orderID in response) {
+                    $('div.container').append(`
+                        <a href="track.html?TrackNumber=${orderID}">
+                            <h2>${orderID}</h2>
+                        </a>
+                    `);
+                    response[orderID].forEach(parcel => {
+                        $('div.container').append(`
+                        <a href="track.html?TrackNumber=${parcel['ParcelID']}">
+                            <span>${parcel['ParcelID']}</span>
+                            <span id="Status">${parcel['Status']}</span>
+                        </a>
+                        `);
+                    });
+                };
+            }
+        },
+        error: function(error) {
+            console.error('Error:', error);
+        }
+        });
+    });
+</script>

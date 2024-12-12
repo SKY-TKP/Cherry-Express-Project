@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cherry Express - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Faster+One&display=swap" rel="stylesheet">
+    
+    <!-- CSS directly in the HTML file -->
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Apply Browalia font except for the logo */
+        body {
+            font-family: 'Browalia', Arial, sans-serif;
+            background-color: #9c0101;
+            color: white;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background-color: #333;
+            padding: 10px 0;
+            text-align: right;
+        }
+
+        .top-bar .top-nav {
+            list-style: none;
+            display: inline-block;
+            font-family: 'Browalia', Arial, sans-serif;
+        }
+
+        .top-bar .top-nav li {
+            display: inline;
+            margin-left: 20px;
+        }
+
+        .top-bar .top-nav li a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .top-bar .top-nav li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Logo and Navigation */
+        .logo-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .logo h1 {
+            font-family: 'Faster One', cursive;
+            font-size: 40px;
+            color: white;
+        }
+
+        .main-nav ul {
+            list-style: none;
+            font-family: 'Browalia', Arial, sans-serif;
+        }
+
+        .main-nav ul li {
+            display: inline-block;
+            margin-left: 30px;
+        }
+
+        .main-nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .main-nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Content Section */
+        .login-container {
+            background-color: white;
+            color: black;
+            width: 300px;
+            margin: 100px auto;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-family: 'Browalia', Arial, sans-serif;
+        }
+
+        .login-container h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .login-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .login-container input[type="submit"] {
+            background-color: #9c0101;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .login-container input[type="submit"]:hover {
+            background-color: #b30404;
+        }
+
+        .signup-link {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .signup-link a {
+            color: #9c0101;
+            text-decoration: none;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="top-bar">
+            <ul class="top-nav">
+                <li><a href="login.html">Login</a></li>
+                <li><a href="signup.html">Sign Up</a></li>
+            </ul>
+        </div>
+        <div class="logo-nav">
+            <div class="logo">
+                <h1>Cherry Express</h1>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="tracking_customer.php">Track & Trace</a></li>
+                    <li><a href="pre-calculation.php">Pre-Calculation</a></li>
+                    <li><a href="preparation.php">Preparation to Ship</a></li>
+                    <li><a href="branches.html">Nearby Branches</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Login Form Section -->
+    <div class="login-container">
+        <h2>Login to Cherry Express</h2>
+        <form action="login_process.php" method="POST">
+            <input type="text" name="phone" placeholder="Phone Number" required>
+            <input type="password" name="password1" placeholder="Password" required>
+            <h3>OR</h3>
+            <input type="text" name="userid" placeholder="User ID" required>
+            <input type="password" name="password2" placeholder="Password" required>
+            <input type="submit" value="Login">
+        </form>
+        <div class="signup-link">
+            <p>Don't have an account? <a href="signup.html">Sign up here</a></p>
+        </div>
+    </div>
+</body>
+</html>

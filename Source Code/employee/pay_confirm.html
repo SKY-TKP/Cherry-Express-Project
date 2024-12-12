@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Confirmation</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#header").load("./include/header.html");
+        $("#footer").load("./include/footer.html");
+      });
+    </script>
+    <style>
+      form {
+        display: flex;
+        flex-direction: column;
+        row-gap: 16px;
+      }
+      a.option {
+        color: black;
+        padding: 20px;
+        border-radius: 8px;
+      }
+      a.option:hover {
+        background-color: lightgray;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header"></div>
+    <div class="container">
+        <h1></h1>
+        <h2></h2>
+        <form action="./include/pay_handler.php" method="get">
+          <div class="input_box">
+              <input type="number" step="any" name="Cash" id="Cash" placeholder="" required>
+              <label>Cash</label>
+          </div>
+          <input type="hidden" name="PaymentType" id="PaymentType" value="">
+          <input type="hidden" name="TotalPrice" id="TotalPrice" value="">
+          <input type="hidden" name="OrderID" id="OrderID" value="">
+          <button class="primary" type="submit">Paid</button>
+      </form>
+    </div>
+    <div id="footer"></div>
+
+    <script>
+        const orderID = sessionStorage.getItem("OrderID");
+        $.ajax({
+            url: './include/get_total_price.php',
+            type: 'get',
+            dataType: 'json',
+            data: {"OrderID": orderID},
+            success: function(response) {
+                totalPrice = response['TotalPrice']
+                sessionStorage.setItem("TotalPrice", totalPrice);   
+                sessionStorage.setItem("Cash", $('#Cash').val()); 
+
+                paymentType = new URLSearchParams(window.location.search).get('paymentType');
+                
+                sessionStorage.setItem("PaymentType", paymentType); 
+
+
+                $('#TotalPrice').val(totalPrice);
+                $('h2').text('Total ฿'+totalPrice);
+                $('#PaymentType').val(paymentType);
+                $('h1').text(paymentType);
+                $('#OrderID').val(orderID);
+
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+
+        $('#Cash').on('change', function() {
+          if (paymentType != 'Cash') {
+                    $('.input_box').hide();
+                    sessionStorage.setItem("Cash", totalPrice);
+                }
+                else {
+                  sessionStorage.setItem("Cash", $('#Cash').val());
+                }
+        });
+    
+        
+    </script>
+    
+  </body>
+</html>

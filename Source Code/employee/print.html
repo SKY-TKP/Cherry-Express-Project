@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#header").load("./include/header.html");
+            $("#footer").load("./include/footer.html");
+        });
+    </script>
+    <title>Print</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            row-gap: 40px;
+        }
+        button.primary, button.secondary {
+            width: 500px;
+        }
+        h2 {
+            border: none;
+            border-bottom: 2px solid black;
+            width: 200px;
+        }
+        div.hflex {
+            justify-content: center;
+            align-items: center;
+        }
+        h1 {
+            text-align: left;
+        }
+        div#orders {
+            display: flex;
+            flex-direction: column;
+            row-gap: 40px;
+        }
+        @media print {
+            button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="parcels"></div>
+    <button class="primary" onclick="window.print()">Print</button>
+    <button class="secondary" onclick="document.location='./assign.html'">Back to Assign</button>
+</body>
+</html>
+<script>
+    $(document).ready(function() {
+        var parcels = JSON.parse(sessionStorage.getItem("Parcels"));
+        console.log(parcels);
+        parcels.forEach(parcel => {
+            $('div#parcels').append(`
+                <div id="${parcel['ParcelID']}" class="container">
+                    <div class="hflex">
+                        <section>
+                            <h1 id="ParcelID"></h1>
+                            <h1 id="DueDate"></h1>
+                        </section>
+                        <div id="qr_${parcel['ParcelID']}"></div>
+                    </div>
+                    <div class="hflex">
+                        <section>
+                            <h2>Sender</h2>
+                            <span id="FirstName"></span>
+                            <span id="LastName"></span>
+                            <p id="AddressLine1"></p>
+                            <p id="AddressLine2"></p>
+                            <p id="PostCode"></p>
+                            <p id="ContactNumber"></p>
+                        </section>
+                        <section>
+                            <h2>Receiver</h2>
+                            <span id="ReceiverFirstName"></span>
+                            <span id="ReceiverLastName"></span>
+                            <p id="ReceiverAddressLine1"></p>
+                            <p id="ReceiverAddressLine2"></p>
+                            <p id="ReceiverPostCode"></p>
+                            <p id="ReceiverContactNumber"></p>
+                        </section>
+                    </div>
+                </div>
+            `)
+            for (id in parcel) {
+                if ($(`div#${parcel['ParcelID']} #${id}`).length) {
+                    $(`div#${parcel['ParcelID']} #${id}`).text(parcel[id]);
+                }
+            }
+            const canvas = document.createElement('canvas');
+            document.getElementById(`qr_${parcel['ParcelID']}`).appendChild(canvas);
+            QRCode.toCanvas(canvas, parcel['ParcelID'], {
+                width: 200
+            }, function (error) {
+                if (error) console.error(error);
+            });
+        });
+    });
+</script>

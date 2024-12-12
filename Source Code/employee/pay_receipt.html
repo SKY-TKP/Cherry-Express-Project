@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#header").load("./include/header.html");
+            $("#footer").load("./include/footer.html");
+        });
+    </script>
+    <title>Receipt</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            row-gap: 40px;
+        }
+        button.primary, button.secondary {
+            width: 500px;
+        }
+        h2 {
+            border: none;
+            border-bottom: 2px solid black;
+            width: 200px;
+        }
+        div.hflex {
+            justify-content: center;
+            align-items: center;
+        }
+        h1 {
+            text-align: left;
+        }
+        div#orders {
+            display: flex;
+            flex-direction: column;
+            row-gap: 40px;
+        }
+        @media print {
+            button {
+                display: none;
+            }
+        }
+        table {
+            width: 100%;
+            border-top: 1px solid lightgray;
+
+        }
+        h1 {
+            text-align: center;
+        }
+        td:last-child {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Receipt</h1>
+
+        <h3 id="OrderID">OrderID: </h3>
+        <h3 id="PaymentType">Payment: </h3>
+
+        <table id="parcels"></table>
+        <table>
+            <tr>
+                <td>Total</td>
+                <td id="TotalPrice"></td>
+            </tr>
+            <tr>
+                <td>Cash</td>
+                <td id="Cash"></td>
+            </tr>
+            <tr>
+                <td>Change</td>
+                <td id="Change"></td>
+            </tr>
+        </table>
+    </div>
+    <button class="primary" onclick="window.print()">Print</button>
+    <button class="secondary" onclick="document.location='./print.html'">Shipping Label</button>
+</body>
+</html>
+<script>
+    $(document).ready(function() {
+
+        console.log(sessionStorage.getItem('TotalPrice'));
+        console.log(sessionStorage.getItem('Cash'));
+        console.log(sessionStorage.getItem('PaymentType'));
+        console.log(sessionStorage.getItem('OrderID'));
+        console.log(sessionStorage.getItem('Parcels'));
+
+        total = sessionStorage.getItem('TotalPrice');
+        cash = sessionStorage.getItem('Cash');
+        change = cash-total;
+
+        $('#TotalPrice').append(`฿ ${total}`);
+        $('#Cash').append(`฿ ${cash}`);
+        $('#Change').append(`฿ ${change}`);
+
+        $('#OrderID').append(`${sessionStorage.getItem('OrderID')}`);
+        $('#PaymentType').append(`${sessionStorage.getItem('PaymentType')}`);
+
+
+        var parcels = JSON.parse(sessionStorage.getItem("Parcels"));
+        parcels.forEach(parcel => {
+            $('#parcels').append(`
+            <tr>
+                <td>${parcel['ParcelID']}</td>
+                <td>฿${parcel['Price']}</td>
+            </tr>
+            `)
+        });
+
+
+
+    });
+</script>

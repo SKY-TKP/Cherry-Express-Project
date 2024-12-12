@@ -1,0 +1,51 @@
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: './include/session.php',
+            type: 'POST',
+            dataType: 'json',
+            success: function(session) {
+                if (session['customer']) {
+                    $('span#name').text(session['customer']['FirstName']);
+                    $('div.drop_down_menu').html(`
+                        <a href="profile.html">Edit profile</a>
+                        <a href="cart.html">Cart</a>
+                        <a href="order.html">Order History</a>
+                        <a href="./include/logout_handler.php">Log out</a>
+                    `);
+                }
+                else {
+                    $('div.drop_down_menu').html(`
+                        <a href="login.html">Log in</a>
+                        <a href="signup.html">Sign up</a>
+                    `);
+                }
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    })
+</script>
+<header>
+    <nav>
+        <a class="logo" href="home.html">
+            <img src="./image/icon/Logo_White.svg">
+            <span>EXPRESS</span>
+        </a>
+        <div class="link_list">
+            <a href="track.html">Track</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="send.html">Send</a>
+            <a href="store.html">Store</a>
+        </div>
+        <div class="drop_down">
+            <a class="profile">
+                <span id="name"></span>
+                <img class="profile" src="./image/icon/profile.png">
+            </a>
+            <div class="drop_down_menu">
+            </div>
+        </div>
+    </nav>
+</header>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../styles.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#header").load("./include/header.html");
+        $("#footer").load("./include/footer.html");
+      });
+    </script>
+    <title>Dashboard</title>
+    <style>
+      table {
+        width: 100%;
+        margin-top: 10px;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 8px;
+        border: 1px solid #ccc;
+        text-align: center;
+      }
+      th {
+        background-color: #9c0101;
+        color: white;
+      }
+      div.container {
+        width: 600px;
+      }
+      .vflex {
+        display: flex;
+        flex-direction: column;
+        row-gap: 20px;
+      }
+      main {
+        display: flex;
+        align-items: start;
+        column-gap: 20px;
+      }
+      .parcel_count {
+        background-color: #9c0101;
+        border-radius: 4px;
+        padding: 0 4px;
+        color: white;
+      }
+      li {
+        margin: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header"></div>
+    <main>
+      <div class="container">
+        <h2>Total Deliveries</h2>
+        <div class="input_box">
+          <select name="period" id="period">
+            <option value="Day">Day</option>
+            <option value="Month">Month</option>
+            <option value="Year">Year</option>
+          </select>
+          <label>By</label>
+        </div>
+        <canvas id="myChart"></canvas>
+        <table id="totalDeliveriesTable">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Total Deliveries</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="vflex">
+        <div class="container">
+          <h2>Top 3 Sender Location</h2>
+          <ol id="top3_sender"></ol>
+        </div>
+        <div class="container">
+          <h2>Top 3 Receiver Location</h2>
+          <ol id="top3_receiver"></ol>
+        </div>
+        <div class="container">
+          <h2>Top 3 Box Size</h2>
+          <ol id="top3_box"></ol>
+        </div>
+      </div>
+    </main>
+    <div id="footer"></div>
+  </body>
+</html>
+<script>
+  let myChart; // Declare a global Chart instance
+  update_chart("Day");
+
+  $("#period").on("change", function () {
+    update_chart(this.value);
+  });
+
+  function update_chart(period) {
+    $.ajax({
+      url: "./include/dashboard_handler.php",
+      type: "GET",
+      data: { period: period },
+      dataType: "json",
+      success: function (response) {
+        const labels = response["total_parcel"].map((item) => item.Date);
+        const dataPoints = response["total_parcel"].map(
+          (item) => item.ParcelCount
+        );
+
+        // Destroy the existing chart before creating a new one
+        if (myChart) {
+          myChart.destroy();
+        }
+
+        const ctx = $("#myChart")[0].getContext("2d");
+        myChart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: "Total Deliveries",
+                data: dataPoints,
+                borderColor: "#9C0101",
+                backgroundColor: "#9C010125",
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+            },
+          },
+        });
+
+        // Clear the table and populate new data
+        const tableBody = $("#totalDeliveriesTable tbody");
+        tableBody.empty(); // Clear existing rows
+        response["total_parcel"].forEach((item) => {
+          const row = `<tr><td>${item.Date}</td><td>${item.ParcelCount}</td></tr>`;
+          tableBody.append(row);
+        });
+
+        $("#top3_sender").empty();
+        response["top3_sender"].forEach((item) => {
+          $("#top3_sender").append(`
+                        <li>${item["PlaceName"]} ${item["State"]}
+                            <span class="parcel_count">${item["ParcelCount"]}</span>
+                        </li>
+                    `);
+        });
+
+        $("#top3_receiver").empty();
+        response["top3_receiver"].forEach((item) => {
+          $("#top3_receiver").append(`
+                        <li>${item["PlaceName"]} ${item["State"]}
+                            <span class="parcel_count">${item["ParcelCount"]}</span>
+                        </li>
+                    `);
+        });
+
+        $("#top3_box").empty();
+        response["top3_box"].forEach((item) => {
+          $("#top3_box").append(`
+                <li>${item["BoxSize"]} Box
+                    <span class="parcel_count">${item["ParcelCount"]}</span>
+                </li>
+            `);
+        });
+      },
+      error: function (error) {
+        console.error("Error:", error);
+        alert(
+          "Failed to fetch data. Please check your network or try again later."
+        );
+      },
+    });
+  }
+</script>

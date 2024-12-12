@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="Styles.css">
+    <title>Assign Order</title>
+</head>
+
+<body>
+    <form action="order.php" method="post">
+        
+        <h1>Order</h1>
+        <select name="order_type">
+            <option value="standard">Standard</option>
+            <option value="express">Express</option>
+        </select>
+        <p>Date</p>
+        <input type="date" name="date">
+        <p>Time</p>
+        <input type="time" name="time">
+
+        <h1>Parcel</h1>
+        <p>Dimension</p>
+            <input type="text" style="width: 25%;" placeholder="length" name="length">
+            ×<input type="text" style="width: 25%;" placeholder="width" name="width">
+            ×<input type="text" style="width: 25%;" placeholder="height" name="height">
+        <p>Weight</p>
+            <input type="text" style="width: 50%;" placeholder="weight" name="weight">
+            kg
+        
+        <p>Item</p>
+            <input type="text" style="width: 50%;" placeholder="eg. Clothes, Food, Toy" name="item">
+        <h1>
+            Location
+        </h1>
+        <p>From</p>
+            <input type="text" placeholder="Customer ID">
+            <input type="text" style="width: 50%;" placeholder="address" name="sender_address">
+            <select name="sender_postcode">
+                <option value="10500">10500</option>
+                <option value="10330">10330</option>
+            </select>
+        <p>To</p>
+        <input type="text" placeholder="Customer ID">
+        <input type="text" style="width: 50%;" placeholder="address" name="receiver_address">
+        <select name="receiver_postcode">
+            <option value="10500">10500</option>
+            <option value="10330">10330</option>
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+    
+</body>
+<html>

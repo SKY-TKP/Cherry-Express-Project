@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Styles.css">
+    <title>Login Page</title>
+</head>
+<body>
+    <div class="login-container">
+        <h2>
+            <img src="../Logo/Logo_Black.svg" class="logo" alt="Logo" height="30px">
+            Account
+        </h2>
+        <form action="./Login.php" method="post">
+            <div class="input-container">
+                <input type="text" name="email" placeholder=" " required>
+                <label>Email</label>
+            </div>
+            <div class="input-container">
+                <input type="password" name="password" placeholder=" " required>
+                <label>Password</label>
+            </div>
+            <div class="remember-me">
+                <label>
+                    <input type="checkbox" name="remember">Remember Me
+                </label>
+            </div>
+            <button class="primary" type="submit">Log in</button>
+        </form>
+        <button type="button" class="secondary" onclick="window.location.href='./signup'">Sign Up</button>
+        <a href="./forget" class="forgot-password">Forget Password?</a>
+    </div>
+</body>
+</html>

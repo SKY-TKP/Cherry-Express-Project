@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#header").load("./include/header.html");
+            $("#footer").load("./include/footer.html");
+        });
+    </script>
+    <title>Store</title>
+    <style>
+        section {
+            display: flex;
+            flex-direction: column;
+            row-gap: 16px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            row-gap: 20px;
+        }
+        img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            row-gap: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+    <div id="footer"></div>
+</body>
+</html>
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: './include/store_handler.php',
+            type: 'POST',
+            dataType: 'json',
+            success: function(stores) {
+                stores.forEach(store => {
+                    $('body').append(`
+                        <div class="container">
+                        <img src="./image/store/${store['id']}.png">
+                        <h2>${store['PlaceName']}</h2>
+                        <p>${store['StoreLocation']}</p>
+                    `)
+                });
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    })
+</script>

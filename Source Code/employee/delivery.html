@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../styles.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#header").load("./include/header.html");
+        $("#footer").load("./include/footer.html");
+      });
+    </script>
+    <title>Delivery</title>
+    <style>
+      section {
+        display: flex;
+        flex-direction: column;
+        row-gap: 16px;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        row-gap: 20px;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        row-gap: 16px;
+      }
+      div#parcels {
+        display: flex;
+        flex-direction: column;
+        row-gap: 16px;
+      }
+      #assign_button {
+        width: 500px;
+      }
+      button#print {
+        width: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header"></div>
+    <div id="parcels"></div>
+    <div id="footer"></div>
+  </body>
+</html>
+<script>
+  $(document).ready(function () {
+    $.ajax({
+      url: "./include/delivery_get_parcels_handler.php",
+      dataType: "json",
+      success: function (response) {
+        console.log(response);
+        if (response.length === 0) {
+        } else {
+          response.forEach((parcel) => {
+            $("div#parcels").append(`
+                        <div id="${parcel["ParcelID"]}" class="container">
+                            <h2 id="ParcelID"></h2>
+                            <div class="hflex">
+                                <span id="ReceiverFirstName"></span>
+                                <span id="ReceiverLastName"></span>    
+                            </div>
+                            <p id="ReceiverAddressLine1"></p>
+                            <p id="ReceiverAddressLine2"></p>
+                            <p id="ReceiverPostCode"></p>
+                            <p id="ReceiverContactNumber"></p>
+                            <button class="secondary" id="fail" onclick="fail_delivery('${parcel["ParcelID"]}')">Can't Deliver</button>
+                            <button class="secondary" id="return" onclick="return_delivery('${parcel["ParcelID"]}')">Return</button>
+                            <button class="primary" id="sign" onclick="window.location.href ='delivery_sign.html?data=' + encodeURIComponent('${parcel["ParcelID"]}');">Sign</button>
+                        </div>
+                    `);
+            for (id in parcel) {
+              if ($(`div#${parcel["ParcelID"]} #${id}`).length) {
+                $(`div#${parcel["ParcelID"]} #${id}`).text(parcel[id]);
+              }
+            }
+            if (parcel["Status"] == "Delivered") {
+              $(`div#${parcel["ParcelID"]} button#sign`).attr(
+                "class",
+                "secondary"
+              );
+              $(`div#${parcel["ParcelID"]} button#sign`).text("✓Signed");
+              $(`div#${parcel["ParcelID"]} button#sign`).prop("disabled", true);
+            }
+          });
+        }
+      },
+      error: function (error) {
+        console.error("Error:", error);
+      },
+    });
+  });
+
+  function fail_delivery(parcelID) {
+    if (confirm("This parcel can't be delivered?")) {
+      $.ajax({
+        url: "./include/delivery_fail_return.php",
+        type: "get",
+        dataType: "json",
+        data: { ParcelID: parcelID, action: "fail" },
+        success: function (response) {
+          // $(`div#${parcelID} button#fail`).text("Failed");
+        },
+      });
+      $(`div#${parcelID} button#fail`).text("Failed");
+    }
+  }
+
+  function return_delivery(parcelID) {
+    if (confirm("The customer rejects the parcel?")) {
+      $.ajax({
+        url: "./include/delivery_fail_return.php",
+        type: "get",
+        dataType: "json",
+        data: { ParcelID: parcelID, action: "return" },
+        success: function (response) {
+          //   $(`div#${parcelID} button#return`).text("Returned");
+        },
+      });
+      $(`div#${parcelID} button#return`).text("Returned");
+    }
+  }
+</script>

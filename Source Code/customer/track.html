@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../styles.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#header").load("./include/header.html");
+        $("#footer").load("./include/footer.html");
+      });
+    </script>
+    <title>Track</title>
+    <style>
+      section {
+        display: flex;
+        flex-direction: column;
+        row-gap: 16px;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        row-gap: 20px;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        row-gap: 16px;
+      }
+      div#parcels {
+        display: flex;
+        flex-direction: column;
+        row-gap: 16px;
+      }
+      #Status {
+        color: #9c0101;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header"></div>
+    <div class="container">
+      <h1>Track Parcel</h1>
+      <form>
+        <div class="input_box">
+          <input
+            type="text"
+            name="TrackNumber"
+            id="TrackNumber"
+            placeholder=""
+            required
+          />
+          <label>Order ID or Parcel ID</label>
+        </div>
+        <button class="primary" id="Search">Search</button>
+      </form>
+      <p class="warning"></p>
+    </div>
+    <div id="parcels"></div>
+    <div id="footer"></div>
+  </body>
+</html>
+<script>
+  $(document).ready(function () {
+    const trackNumber = new URLSearchParams(window.location.search).get(
+      "TrackNumber"
+    );
+    if (trackNumber) {
+      $("#TrackNumber").val(trackNumber);
+      handleFormSubmit();
+    }
+
+    $("p.warning").hide();
+    $("form").submit(function (event) {
+      event.preventDefault();
+      handleFormSubmit();
+    });
+
+    function handleFormSubmit() {
+      $.ajax({
+        url: "./include/track_handler.php",
+        type: "GET",
+        dataType: "json",
+        data: $("form").serialize(),
+        success: function (response) {
+          if (response.length === 0) {
+            $("p.warning").show();
+            $("p.warning").text("No such order or parcel.");
+          } else {
+            $("p.warning").hide();
+            $("div#parcels").html("");
+            for (parcelID in response) {
+              $("div#parcels").append(`
+                                <div id="${parcelID}" class="container">
+                                    <h2>${response[parcelID][0]["ReceiverFirstName"]} ${response[parcelID][0]["ReceiverLastName"]}</h2>
+                                    <p>${response[parcelID][0]["ReceiverAddressLine1"]}</p>
+                                </div>
+                            `);
+              response[parcelID].forEach((log) => {
+                if (log["FirstName"] == null) {
+                  log["FirstName"] = "You";
+                  log["LastName"] = "";
+                }
+                $(`div#${log["ParcelID"]}`).append(`
+                                    <div>
+                                        <span>${log["Timestamp"]}</span>
+                                        <span id="Status">${log["Status"]}</span>
+                                        <span>by ${log["FirstName"]} ${log["LastName"]}</span>
+                                    </div>
+                                `);
+                if (log["Status"] == "Delivered") {
+                  $(`div#${log["ParcelID"]}`).append(`
+                                    <a href="../employee/image/signature/signature_${log["ParcelID"]}.png">Signature</a>
+                                    `);
+                }
+              });
+            }
+          }
+        },
+        error: function (error) {
+          console.error("Error:", error);
+        },
+      });
+    }
+  });
+</script>

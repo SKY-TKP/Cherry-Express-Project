@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#header").load("./include/header.html");
+            $("#footer").load("./include/footer.html");
+        });
+    </script>
+    <title>Sign</title>
+    <style>
+        form {
+            display: flex;
+            flex-direction: column;
+            row-gap: 16px;
+        }
+        canvas {
+            border-radius: 6px;
+            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+    <div class="container">
+        <h1>Customer Signature</h1>
+        <h2></h2>
+        <form action="./include/delivery_sign_handler.php" method="GET">
+            <input id="ParcelID" type="hidden" name="ParcelID">
+            <input id="signature_data" type="hidden" name="signature_data">
+            <canvas id="signature_canvas"></canvas>
+            <button class="secondary" type="button" onclick="signaturePad.clear()">Clear</button>
+            <button class="primary" type="submit">Submit</button>
+        </form>
+        </div>
+    <div id="footer"></div>
+</body>
+</html>
+<script>
+    let signaturePad;
+    window.onload = function() {
+        const canvas = document.getElementById("signature_canvas");
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        signaturePad = new SignaturePad(canvas, {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+        });
+    };
+
+    $(document).ready(function() {
+        const parcelID = new URLSearchParams(window.location.search).get("data");
+        $("h2").text(parcelID);
+        $("#ParcelID").val(parcelID);
+    });
+
+    $("form").submit(function(event) {
+        event.preventDefault();
+        const signatureData = signaturePad.toDataURL();
+        $("#signature_data").val(signatureData);
+        this.submit();
+    });
+</script>

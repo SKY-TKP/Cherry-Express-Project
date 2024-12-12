@@ -1,0 +1,72 @@
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: './include/session.php',
+            type: 'POST',
+            dataType: 'json',
+            success: function(session) {
+                if (session['employee']) {
+                    $('span#name').text(session['employee']['FirstName']);
+                    $('div.drop_down_menu').html(`
+                        <a href="./include/logout_handler.php">Log out</a>
+                    `);
+                }
+                else {
+                    $('div.drop_down_menu').html(`
+                        <a href="login.html">Log in</a>
+                    `);
+                }
+
+                if (session['employee']['Role']=='Driver') {
+                    $('div.link_list').html(`
+                        <a href="delivery.html">Delivery</a>
+                    `);
+                }
+                else if (session['employee']['Role']=='Warehouse Staff') {
+                    $('div.link_list').html(`
+                        <a href="warehouse.php">Warehouse</a>
+                    `);
+                }
+                else if (session['employee']['Role']=='Sales') {
+                    $('div.link_list').html(`
+                        <a href="assign.html">Assign Order</a>
+                    `);
+                    $('div.drop_down_menu').prepend(`
+                        <a href="./cart.html">Cart</a>
+                    `);
+                }
+                else if (session['employee']['Role']=='Admin') {
+                    $('div.link_list').html(`
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="warehouse.php">Warehouse</a>
+                        <a href="assign.html">Assign Order</a>
+                        <a href="box.php">Manage Box&Price</a>
+                    `);
+                    $('div.drop_down_menu').prepend(`
+                        <a href="./cart.html">Cart</a>
+                    `);
+                }
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    })
+</script>
+<header>
+    <nav>
+        <a class="logo" href="home.html">
+            <img src="./image/icon/Logo_White.svg">
+            <span>EMPLOYEE</span>
+        </a>
+        <div class="link_list"></div>
+        <div class="drop_down">
+            <a class="profile">
+                <span id="name"></span>
+                <img class="profile" src="./image/icon/profile.png">
+            </a>
+            <div class="drop_down_menu">
+            </div>
+        </div>
+    </nav>
+</header>

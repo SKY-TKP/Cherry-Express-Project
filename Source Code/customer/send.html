@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#header").load("./include/header.html");
+            $("#footer").load("./include/footer.html");
+        });
+    </script>
+    <title>Send</title>
+    <style>
+        form {
+            display: flex;
+            flex-direction: column;
+            row-gap: 20px;
+        }        
+        section {
+            display: flex;
+            flex-direction: column;
+            row-gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+    <div class="container">
+        <h1>Send a parcel</h1>
+        <form action="./include/add_cart_handler.php" method="post">
+            <section>
+                <h2>Parcel</h2>
+                <div class="hflex">
+                    <div class="input_box">
+                        <input type="number" step="any" name="Length" id="Length" placeholder="" required>
+                        <label>Length(cm)</label>
+                    </div>
+                    <div class="input_box">
+                        <input type="number" step="any" name="Width" id="Width" placeholder="" required>
+                        <label>Width(cm)</label>
+                    </div>
+                    <div class="input_box">
+                        <input type="number" step="any" name="Height" id="Height" placeholder="" required>
+                        <label>Height(cm)</label>
+                    </div>    
+                </div>
+                <div class="input_box">
+                    <input type="number" step="any" name="Weight" id="Weight" placeholder="" required>
+                    <label>Weight(kg)</label>
+                </div>
+                <div class="input_box">
+                    <select name="DeliveryType" id="DeliveryType" required>
+                        <option value="" disabled selected>Select an option</option>
+                        <option value="Standard">Standard</option>
+                        <option value="Registered">Registered</option>
+                        <option value="Express">Express</option>
+                    </select>
+                    <label>Delivery Type</label>
+                </div>
+            </section>
+            <section>
+                <h2>Receiver</h2>
+                <div class="hflex">
+                    <div class="input_box">
+                        <input type="text" name="ReceiverFirstName" id="ReceiverFirstName" placeholder="" required>
+                        <label>First Name</label>
+                    </div>
+                    <div class="input_box">
+                        <input type="text" name="ReceiverLastName" id="ReceiverLastName" placeholder="" required>
+                        <label>Last Name</label>
+                    </div>    
+                </div>
+                <div class="input_box">
+                    <input type="text" name="ReceiverAddressLine1" id="ReceiverAddressLine1" placeholder="" required>
+                    <label>Address Line 1</label>
+                </div>
+                <div class="input_box">
+                    <input type="text" name="ReceiverAddressLine2" id="ReceiverAddressLine2" placeholder="">
+                    <label>Address Line 2</label>
+                </div>
+                <div class="input_box">
+                    <input type="number" name="ReceiverPostCode" id="ReceiverPostCode" placeholder="" required>
+                    <label>Postal Code</label>
+                </div>
+                <div class="input_box">
+                    <input type="number" name="ReceiverContactNumber" id="ReceiverContactNumber" placeholder="" required>
+                    <label>Phone Number</label>
+                </div>
+            </section>
+            <section>
+                <button class="primary" type="submit" name="action" value="Submit Now">Submit Now</button>
+                <button class="secondary" type="submit" name="action" value="Add to cart">Add to cart</button>    
+            </section>
+        </form>
+    </div>
+    <div id="footer"></div>
+</body>
+</html>
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: './include/session.php',
+            type: 'POST',
+            dataType: 'json',
+            success: function(session) {
+                if (session.length === 0) {
+                    document.location.href = 'login.html';
+                }
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    })
+</script>

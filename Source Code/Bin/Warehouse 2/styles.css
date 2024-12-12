@@ -1,0 +1,226 @@
+ @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+ @import url('https://fonts.googleapis.com/css2?family=Faster+One&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/* layout, font, color */
+:root{
+    --red: #9c0101;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Kanit', 'sans-serif';
+    font-weight: 300;
+    accent-color: var(--red);
+}
+body {
+    background-color: #f2f2f2;
+    display: flex;
+    padding: 50px 40px;
+    width: 100%;
+    min-height: 100vh;
+    justify-content:start;
+    align-items: center;
+    flex-direction: column;
+}
+a {
+    text-decoration: none;
+}
+
+/* input box */
+div.input_box {
+    position: relative;
+}
+div.input_box input {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 12px;
+    height: 40px;
+    font-size: 16px;
+    margin: 8px 0 8px 0;
+}
+div.input_box label{
+    position: absolute;
+    top: 16px;
+    left: 12px;
+    font-size: 16px;
+    color: #ccc;
+    transition: 0.3s;
+    pointer-events: none;
+}
+div.input_box input:focus + label,
+div.input_box input:not(:placeholder-shown) + label {
+    top: 0px;
+    font-size: 12px;
+    color: var(--red);
+    background-color: white;
+    padding: 0 4px;
+}
+div.input_box input:focus,
+div.input_box input:not(:placeholder-shown) {
+    border-color: var(--red);
+    outline-style: none;
+}
+
+/* buttons */
+button.primary {
+    width: 100%;
+    height: 40px;
+    border: 1px solid var(--red);
+    border-radius: 5px;
+    background-color: var(--red);
+    color: white;
+    font-size: 16px;
+    margin: 4px 0 4px 0;
+}
+button.secondary {
+    width: 100%;
+    height: 40px;
+    border: 1px solid var(--red);
+    border-radius: 5px;
+    background-color: white;
+    color: var(--red);
+    font-size: 16px;
+    margin: 8px 0 8px 0;
+}
+
+/* check box */
+label.check_box{
+    display: flex;
+    font-size: 12px;
+    margin: 8px 0 8px 0;
+}
+label.check_box input {
+    margin-right: 8px;
+}
+
+/* text link */
+a.text_link {
+    color: var(--red);
+    text-decoration: none;
+    font-size: 12px;
+}
+.warning {
+    color: red;
+}
+
+/* hover */
+a:hover, button:hover, .input_box:hover, .check_box:hover {
+    /* filter: brightness(0.7) contrast(2.5); */
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+/* footer */
+footer {
+    background-color: var(--red);
+    color: white;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+footer a, footer span {
+    font-size: 12px;
+    margin: 0 8px;
+}
+footer span:last-child {
+    margin-left: auto;
+}
+
+/* header */
+header {
+}
+nav {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: 50px;
+    background-color: var(--red);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    z-index: 1;
+}
+nav div:nth-child(2) {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+a.logo {
+    display: flex;
+    align-items: center;
+}
+a.logo span {
+    color: white;
+    font-size: 24px;
+    font-family: "Faster One";
+}
+a.logo img {
+    height: 24px;
+    margin: 0 8px;
+}
+div.link_list a {
+    margin: 0 4px;
+    color: white;
+}
+a.profile {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+a.profile img {
+    border-radius: 12px;
+    height: 24px;
+    width: 24px;
+    margin: 0 8px;
+}
+div.drop_down {
+    height: 100%;
+    position: relative;
+}
+div.drop_down_menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    width: 150px;
+}
+div.drop_down_menu a {
+    padding: 8px;
+    background-color: white;
+    color: var(--red);
+}
+div.drop_down:not(:hover) div {
+    display: none;
+}
+/* warehouse table*/
+.warehouse {
+    font-family: 'Kanit', 'sans-serif';
+    font-weight: 300;
+    border-collapse:collapse;
+}
+.warehouse td, .warehouse th {
+    border : 1px solid #9c0101;
+    padding : 8px ;
+}
+.warehouse tr:nth-child(even){
+    background-color: #f2f2f2;
+}
+.warehouse tr:hover{
+    background-color: #ddd;
+}
+.warehouse th{
+    padding-top: 12px;
+    padding-bottom:12px;
+    text-align: center;
+    background-color: #9c0101;
+    color:white;
+}
